@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="screen-orientation" content="landscape">
+    <meta name="full-screen" content="yes">
+    <meta name="browsermode" content="application">
+    <meta name="msapplication-TileColor" content="#141428">
+    <meta name="msapplication-TileImage" content="icons/icon-144x144.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="icons/icon-192x192.png">
+    <title>TIMEGUESS - Maître du Temps</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="css/style.css?v=110">
+    <style>
+        /* Fallback inline pour chargement rapide */
+        html, body { 
+            margin: 0; 
+            padding: 0; 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden; 
+            background: #1a1a2e; 
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container"></div>
+    
+    <!-- Overlay pour demander de tourner le téléphone -->
+    <div id="orientation-overlay">
+        <div class="orientation-content">
+            <div class="rotate-icon">📱↻</div>
+            <div class="rotate-text">Tournez votre écran</div>
+            <div class="rotate-subtext">Pour une meilleure expérience, jouez en mode paysage</div>
+        </div>
+    </div>
+    
+    <style>
+        #orientation-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .orientation-content {
+            text-align: center;
+            color: white;
+            font-family: 'Arial', sans-serif;
+        }
+        .rotate-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: rotate-phone 2s ease-in-out infinite;
+        }
+        .rotate-text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+        .rotate-subtext {
+            font-size: 14px;
+            color: #aaa;
+        }
+        @keyframes rotate-phone {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg); }
+            75% { transform: rotate(90deg); }
+        }
+        
+        /* Styles plein écran mobile */
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        
+        /* Cacher la barre d'adresse sur iOS */
+        html {
+            height: -webkit-fill-available;
+        }
+        body {
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+        }
+    </style>
+    
+    <!-- Phaser 3 -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- Configuration -->
+    <script src="js/config.js?v=110"></script>
+    
+    <!-- Managers -->
+    <script src="js/managers/FirebaseManager.js?v=110"></script>
+    <script src="js/managers/SoundManager.js?v=110"></script>
+    <script src="js/managers/ParticleManager.js?v=110"></script>
+    <script src="js/managers/AchievementManager.js?v=110"></script>
+    <script src="js/managers/StatsManager.js?v=110"></script>
+    <script src="js/managers/ProgressionManager.js?v=128"></script>
+    <script src="js/managers/Translations.js?v=110"></script>
+    
+    <!-- Components -->
+    <script src="js/components/Timeline.js?v=110"></script>
+    <script src="js/components/Marker.js?v=110"></script>
+    
+    <!-- Scenes -->
+    <script src="js/scenes/LanguageScene.js?v=149"></script>
+    <script src="js/scenes/MenuScene.js?v=148"></script>
+    <script src="js/scenes/SettingsScene.js?v=149"></script>
+    <script src="js/scenes/StatsScene.js?v=125"></script>
+    <script src="js/scenes/PauseScene.js?v=110"></script>
+    <script src="js/scenes/CategoryScene.js?v=125"></script>
+    <script src="js/scenes/ModeScene.js?v=125"></script>
+    <script src="js/scenes/DifficultyScene.js?v=127"></script>
+    <script src="js/scenes/TransitionScene.js?v=110"></script>
+    <script src="js/scenes/GameScene.js?v=149"></script>
+    <script src="js/scenes/ResultScene.js?v=152"></script>
+    <script src="js/scenes/ProfileScene.js?v=155"></script>
+    <script src="js/scenes/LeaderboardScene.js?v=153"></script>
+    <script src="js/scenes/GlobalLeaderboardScene.js?v=153"></script>
+    <script src="js/scenes/TutorialScene.js?v=125"></script>
+    
+    <!-- Main -->
+    <script src="js/main.js?v=110"></script>
+    
+    <!-- Service Worker Registration for PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('SW registered:', reg.scope))
+                    .catch(err => console.log('SW registration failed:', err));
+            });
+        }
+        
+        // Prevent pull-to-refresh on mobile
+        document.body.addEventListener('touchmove', function(e) {
+            if (e.target === document.body || e.target === document.documentElement) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Lock screen orientation to landscape if supported
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(() => {});
+        }
+    </script>
+</body>
+</html>
